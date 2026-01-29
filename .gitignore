@@ -1,0 +1,49 @@
+# Unity generated
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+
+# Asset meta data should only be ignored when using external VCS
+/[Aa]ssets/*.boostproj
+/[Aa]ssets/*.pidb
+/[Aa]ssets/*.unityproj
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.boostproj
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Builds
+*.apk
+*.aab
+*.exe
+*.app
+*.ipa
+
+# Crashlytics
+crashlytics-build.properties
+
+# Packed assets (comment out if you want to keep them)
+*.unitypackage
+
+# Recordings
+/[Rr]ecordings/
+
+# Profiler
+/[Pp]rofiler/
