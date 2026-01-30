@@ -7,28 +7,61 @@ public class SwitchScript : MonoBehaviour
     public float interactionRange = 2f;
 
     private Transform player;
-    private bool playerInRange;
-    private bool wasInteractPressed;
+    private Camera playerCamera;
+    private bool canInteract;
 
     void Start()
     {
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
+        {
             player = playerObj.transform;
+            playerCamera = playerObj.GetComponentInChildren<Camera>();
+        }
     }
 
     void Update()
     {
-        if (player == null) return;
+        if (player == null || playerCamera == null) return;
+
+        canInteract = false;
 
         // Check if player is in range
         float distance = Vector3.Distance(transform.position, player.position);
-        playerInRange = distance <= interactionRange;
+        bool playerInRange = distance <= interactionRange;
+
+        // Check if player is looking at this object
+        if (playerInRange)
+        {
+            Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+            if (Physics.Raycast(ray, out RaycastHit hit, interactionRange))
+            {
+                Debug.Log($"[Switch] Raycast hit: {hit.transform.name}");
+                if (hit.transform == transform)
+                {
+                    canInteract = true;
+                }
+            }
+            else
+            {
+                Debug.Log("[Switch] Raycast hit nothing");
+            }
+        }
 
         // E key pressed (single press, not hold)
         bool interactPressed = Input.GetKeyDown(KeyCode.E);
 
-        if (playerInRange && interactPressed)
+        // Show interaction prompt when looking at switch
+        if (canInteract)
+        {
+            if (InteractionPromptUI.Instance != null)
+            {
+                string action = switchValue ? "Turn Off" : "Turn On";
+                InteractionPromptUI.Instance.ShowPrompt($"Press E to {action}");
+            }
+        }
+
+        if (canInteract && interactPressed)
         {
             switchValue = !switchValue;
             foreach (GameObject item in interacteWith)
