@@ -25,13 +25,35 @@ namespace EasyPeasyFirstPersonController
         public bool slide;
         public bool interact;
         public bool mask;
+        private bool useMoblie=Application.isMobilePlatform;
+        void Start()
+        {
+            useMoblie=false;
+            if (!useMoblie)
+            {
+                GameObject.Find("ComputerUI")?.SetActive(false);
+            } else
+            {
+                GameObject.Find("AndroidUI")?.SetActive(false);
+            }
+        }
         void Update()
         {
-            moveInput = (Application.isMobilePlatform)?new Vector2(MobileInput.horizontal,MobileInput.vertical):new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-            lookInput = (Application.isMobilePlatform)?new Vector2(MobileInput.MouseX,MobileInput.MouseY):new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-            jump = Input.GetKey(KeyCode.Space);
-            interact = (Application.isMobilePlatform)?Input.GetKey(KeyCode.E):MobileInput.interact;
-            mask = (Application.isMobilePlatform)?Input.GetKey(KeyCode.Q):MobileInput.mask;
+             if (!useMoblie)
+            {
+                moveInput = new Vector2(MobileInput.horizontal, MobileInput.vertical);
+                lookInput = new Vector2(MobileInput.MouseX, MobileInput.MouseY);
+                interact = MobileInput.interact;
+                mask = MobileInput.mask;
+            }
+            else
+            {
+                moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+                lookInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+                interact = Input.GetKey(KeyCode.E);
+                mask = Input.GetKey(KeyCode.Q);
+            }
+
         }
     }
 }
