@@ -84,7 +84,7 @@ public class BoxInteraction : MonoBehaviour
     void HandleInteraction()
     {
         // Toggle interaction on E press (not hold)
-        if (Input.GetKeyDown(KeyCode.E))
+        if (input.interact)
         {
             if (currentBox == null && lookingAtBox != null)
             {

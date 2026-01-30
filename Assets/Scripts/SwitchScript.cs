@@ -1,4 +1,5 @@
 using UnityEngine;
+using EasyPeasyFirstPersonController;
 
 public class SwitchScript : MonoBehaviour
 {
@@ -7,6 +8,8 @@ public class SwitchScript : MonoBehaviour
     public float interactionRange = 2f;
 
     private Transform player;
+    private InputManagerOld input;
+
     private Camera playerCamera;
     private bool canInteract;
 
@@ -18,6 +21,7 @@ public class SwitchScript : MonoBehaviour
             player = playerObj.transform;
             playerCamera = playerObj.GetComponentInChildren<Camera>();
         }
+        input = player.GetComponent<InputManagerOld>();
     }
 
     void Update()
@@ -27,6 +31,9 @@ public class SwitchScript : MonoBehaviour
         canInteract = false;
 
         // Check if player is in range
+        bool interactPressed = input.interact;
+            
+        
         float distance = Vector3.Distance(transform.position, player.position);
         bool playerInRange = distance <= interactionRange;
 
@@ -46,28 +53,22 @@ public class SwitchScript : MonoBehaviour
             {
                 Debug.Log("[Switch] Raycast hit nothing");
             }
+        
         }
+        
 
-        // E key pressed (single press, not hold)
-        bool interactPressed = Input.GetKeyDown(KeyCode.E);
-
-        // Show interaction prompt when looking at switch
-        if (canInteract)
+        if (canInteract && interactPressed)
         {
             if (InteractionPromptUI.Instance != null)
             {
                 string action = switchValue ? "Turn Off" : "Turn On";
                 InteractionPromptUI.Instance.ShowPrompt($"Press E to {action}");
             }
-        }
 
-        if (canInteract && interactPressed)
-        {
             switchValue = !switchValue;
             foreach (GameObject item in interacteWith)
                 item?.GetComponent<SwitchInteractive>()?.DoStuff(switchValue);
             GetComponent<Renderer>().material.color = switchValue ? Color.green : Color.blue;
-            Debug.Log($"[Switch] Toggled to: {switchValue}");
         }
     }
 
