@@ -13,14 +13,16 @@ namespace EasyPeasyFirstPersonController
         public bool sprint;
         public bool crouch;
         public bool slide;
+        public bool interact;
         void Update()
         {
-            moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+            moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
             lookInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
             jump = Input.GetKey(KeyCode.Space);
             sprint = Input.GetKey(KeyCode.LeftShift);
             crouch = Input.GetKey(KeyCode.LeftControl);
             slide = Input.GetKey(KeyCode.LeftControl);
+            interact = Input.GetKey(KeyCode.E);
         }
     }
 }
