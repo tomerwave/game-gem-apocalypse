@@ -83,44 +83,45 @@ public class BoxInteraction : MonoBehaviour
 
     void HandleInteraction()
     {
-        if (input.interact)
+        // Toggle interaction on E press (not hold)
+        if (Input.GetKeyDown(KeyCode.E))
         {
             if (currentBox == null && lookingAtBox != null)
             {
+                // Start pushing
                 StartHolding(lookingAtBox);
             }
-
-            if (currentBox != null)
+            else if (currentBox != null)
             {
-                // Check if still looking at the box
-                if (!IsLookingAtCurrentBox())
-                {
-                    Debug.Log("[BoxInteraction] No longer looking at box, dropping.");
-                    StopHolding();
-                    return;
-                }
-
-                // Get current speed based on whether player is sprinting
-                bool isSprinting = input.sprint && input.moveInput.y > 0;
-                float currentSpeed = isSprinting ? playerController.sprintSpeed : playerController.walkSpeed;
-
-                currentBox.MoveWithPlayer(input.moveInput, transform, currentSpeed);
-
-                float distance = Vector3.Distance(transform.position, currentBox.transform.position);
-
-                Debug.Log($"[BoxInteraction] Distance: {distance:F2} | MaxDist: {currentBox.maxDistance} | Speed: {currentSpeed:F2} | Sprinting: {isSprinting}");
-
-                if (distance > currentBox.maxDistance)
-                {
-                    Debug.LogWarning($"[BoxInteraction] MAX DISTANCE EXCEEDED! Dropping box. Distance: {distance:F2}");
-                    StopHolding();
-                }
+                // Stop pushing
+                StopHolding();
             }
         }
-        else
+
+        // Continue moving box if holding one
+        if (currentBox != null)
         {
-            if (currentBox != null)
+            // Check if still looking at the box
+            if (!IsLookingAtCurrentBox())
             {
+                Debug.Log("[BoxInteraction] No longer looking at box, dropping.");
+                StopHolding();
+                return;
+            }
+
+            // Get current speed based on whether player is sprinting
+            bool isSprinting = input.sprint && input.moveInput.y > 0;
+            float currentSpeed = isSprinting ? playerController.sprintSpeed : playerController.walkSpeed;
+
+            currentBox.MoveWithPlayer(input.moveInput, transform, currentSpeed);
+
+            float distance = Vector3.Distance(transform.position, currentBox.transform.position);
+
+            Debug.Log($"[BoxInteraction] Distance: {distance:F2} | MaxDist: {currentBox.maxDistance} | Speed: {currentSpeed:F2} | Sprinting: {isSprinting}");
+
+            if (distance > currentBox.maxDistance)
+            {
+                Debug.LogWarning($"[BoxInteraction] MAX DISTANCE EXCEEDED! Dropping box. Distance: {distance:F2}");
                 StopHolding();
             }
         }
@@ -163,11 +164,11 @@ public class BoxInteraction : MonoBehaviour
         {
             if (currentBox != null)
             {
-                InteractionPromptUI.Instance.ShowPrompt("Release E to Stop");
+                InteractionPromptUI.Instance.ShowPrompt("Press E to Release");
             }
             else if (lookingAtBox != null)
             {
-                InteractionPromptUI.Instance.ShowPrompt("Hold E to Push");
+                InteractionPromptUI.Instance.ShowPrompt("Press E to Push");
             }
         }
     }
