@@ -16,6 +16,8 @@ public class InteractButton : MonoBehaviour
     {
         if(gameObject.name.Contains("Interact"))
             MobileInput.interact = false;
+        if(gameObject.name.Contains("Mask"))
+            MobileInput.mask = false;
     }
 
     private IEnumerator DelayedPress()
@@ -23,7 +25,7 @@ public class InteractButton : MonoBehaviour
         if(gameObject.name.Contains("Interact"))
             MobileInput.interact = true;
         if(gameObject.name.Contains("Mask"))
-            MobileInput.mask = !MobileInput.mask;
+            MobileInput.mask = true;
         yield return new WaitForSeconds(delay);
         OnPointerUp();
     }
