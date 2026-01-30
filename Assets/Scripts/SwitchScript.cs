@@ -3,35 +3,44 @@ using UnityEngine;
 public class SwitchScript : MonoBehaviour
 {
     public bool switchValue;
-    public GameObject[] interacteWith;    
+    public GameObject[] interacteWith;
+    public float interactionRange = 2f;
 
-    private Camera cam;
-    private float maxDistance = 20f;
+    private Transform player;
+    private bool playerInRange;
+    private bool wasInteractPressed;
 
     void Start()
     {
-        cam ??= FindObjectOfType<Camera>();
-        Debug.Log(cam.name);
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj != null)
+            player = playerObj.transform;
     }
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (player == null) return;
+
+        // Check if player is in range
+        float distance = Vector3.Distance(transform.position, player.position);
+        playerInRange = distance <= interactionRange;
+
+        // E key pressed (single press, not hold)
+        bool interactPressed = Input.GetKeyDown(KeyCode.E);
+
+        if (playerInRange && interactPressed)
         {
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out RaycastHit hit, maxDistance))
-            {
-                float distance = Vector3.Distance(cam.transform.position, hit.point);
-
-                if (distance <= 2f)
-                {
-                    switchValue = !switchValue;
-                    foreach (GameObject item in interacteWith)
-                        item?.GetComponent<SwitchInteractive>()?.DoStuff(switchValue);
-                    GetComponent<Renderer>().material.color = switchValue?Color.green:Color.blue;
-                }
-            }
+            switchValue = !switchValue;
+            foreach (GameObject item in interacteWith)
+                item?.GetComponent<SwitchInteractive>()?.DoStuff(switchValue);
+            GetComponent<Renderer>().material.color = switchValue ? Color.green : Color.blue;
+            Debug.Log($"[Switch] Toggled to: {switchValue}");
         }
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, interactionRange);
     }
 }
