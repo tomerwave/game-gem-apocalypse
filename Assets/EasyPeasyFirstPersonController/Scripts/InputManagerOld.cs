@@ -27,11 +27,11 @@ namespace EasyPeasyFirstPersonController
         public bool mask;
         void Update()
         {
-            moveInput = new Vector2(MobileInput.horizontal,MobileInput.vertical);//new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-            lookInput = new Vector2(MobileInput.MouseX,MobileInput.MouseY);//new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+            moveInput = (Application.isMobilePlatform)?new Vector2(MobileInput.horizontal,MobileInput.vertical):new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            lookInput = (Application.isMobilePlatform)?new Vector2(MobileInput.MouseX,MobileInput.MouseY):new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
             jump = Input.GetKey(KeyCode.Space);
-            interact = Input.GetKey(KeyCode.E) || MobileInput.interact;
-            mask = Input.GetKey(KeyCode.Q) || MobileInput.mask;
+            interact = (Application.isMobilePlatform)?Input.GetKey(KeyCode.E):MobileInput.interact;
+            mask = (Application.isMobilePlatform)?Input.GetKey(KeyCode.Q):MobileInput.mask;
         }
     }
 }
