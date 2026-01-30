@@ -17,8 +17,9 @@ public class BoxInteraction : MonoBehaviour
 
     private InputManagerOld input;
     private FirstPersonController playerController;
+    private Camera playerCamera;
     private InteractableBox currentBox;
-    private InteractableBox nearbyBox;
+    private InteractableBox lookingAtBox;
     private float originalWalkSpeed;
     private float originalSprintSpeed;
 
@@ -26,6 +27,7 @@ public class BoxInteraction : MonoBehaviour
     {
         input = GetComponent<InputManagerOld>();
         playerController = GetComponent<FirstPersonController>();
+        playerCamera = GetComponentInChildren<Camera>();
 
         if (playerController != null)
         {
@@ -48,63 +50,78 @@ public class BoxInteraction : MonoBehaviour
 
     void DetectNearbyBox()
     {
-        if (currentBox != null) return;
+        lookingAtBox = null;
 
-        Collider[] colliders = Physics.OverlapSphere(transform.position, interactionRange, interactableLayer);
+        if (playerCamera == null) return;
 
-        InteractableBox closest = null;
-        float closestDistance = float.MaxValue;
-
-        foreach (var col in colliders)
+        // Raycast from camera to detect what player is looking at
+        Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+        if (Physics.Raycast(ray, out RaycastHit hit, interactionRange, interactableLayer))
         {
-            if (!col.CompareTag(interactableTag)) continue;
-
-            InteractableBox box = col.GetComponent<InteractableBox>();
-            if (box == null) continue;
-
-            float distance = Vector3.Distance(transform.position, col.transform.position);
-            if (distance < closestDistance)
+            if (hit.collider.CompareTag(interactableTag))
             {
-                closestDistance = distance;
-                closest = box;
+                InteractableBox box = hit.collider.GetComponent<InteractableBox>();
+                if (box != null)
+                {
+                    lookingAtBox = box;
+                }
             }
         }
+    }
 
-        nearbyBox = closest;
+    bool IsLookingAtCurrentBox()
+    {
+        if (currentBox == null || playerCamera == null) return false;
+
+        Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+        if (Physics.Raycast(ray, out RaycastHit hit, interactionRange + currentBox.maxDistance, interactableLayer))
+        {
+            return hit.collider.GetComponent<InteractableBox>() == currentBox;
+        }
+        return false;
     }
 
     void HandleInteraction()
     {
-        if (input.interact)
+        // Toggle interaction on E press (not hold)
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            if (currentBox == null && nearbyBox != null)
+            if (currentBox == null && lookingAtBox != null)
             {
-                StartHolding(nearbyBox);
+                // Start pushing
+                StartHolding(lookingAtBox);
             }
-
-            if (currentBox != null)
+            else if (currentBox != null)
             {
-                // Get current speed based on whether player is sprinting
-                bool isSprinting = input.sprint && input.moveInput.y > 0;
-                float currentSpeed = isSprinting ? playerController.sprintSpeed : playerController.walkSpeed;
-
-                currentBox.MoveWithPlayer(input.moveInput, transform, currentSpeed);
-
-                float distance = Vector3.Distance(transform.position, currentBox.transform.position);
-
-                Debug.Log($"[BoxInteraction] Distance: {distance:F2} | MaxDist: {currentBox.maxDistance} | Speed: {currentSpeed:F2} | Sprinting: {isSprinting}");
-
-                if (distance > currentBox.maxDistance)
-                {
-                    Debug.LogWarning($"[BoxInteraction] MAX DISTANCE EXCEEDED! Dropping box. Distance: {distance:F2}");
-                    StopHolding();
-                }
+                // Stop pushing
+                StopHolding();
             }
         }
-        else
+
+        // Continue moving box if holding one
+        if (currentBox != null)
         {
-            if (currentBox != null)
+            // Check if still looking at the box
+            if (!IsLookingAtCurrentBox())
             {
+                Debug.Log("[BoxInteraction] No longer looking at box, dropping.");
+                StopHolding();
+                return;
+            }
+
+            // Get current speed based on whether player is sprinting
+            bool isSprinting = input.sprint && input.moveInput.y > 0;
+            float currentSpeed = isSprinting ? playerController.sprintSpeed : playerController.walkSpeed;
+
+            currentBox.MoveWithPlayer(input.moveInput, transform, currentSpeed);
+
+            float distance = Vector3.Distance(transform.position, currentBox.transform.position);
+
+            Debug.Log($"[BoxInteraction] Distance: {distance:F2} | MaxDist: {currentBox.maxDistance} | Speed: {currentSpeed:F2} | Sprinting: {isSprinting}");
+
+            if (distance > currentBox.maxDistance)
+            {
+                Debug.LogWarning($"[BoxInteraction] MAX DISTANCE EXCEEDED! Dropping box. Distance: {distance:F2}");
                 StopHolding();
             }
         }
@@ -142,21 +159,17 @@ public class BoxInteraction : MonoBehaviour
 
     void UpdateUI()
     {
-        if (interactionPrompt == null) return;
-
-        if (currentBox != null)
+        // Use the centralized interaction prompt system
+        if (InteractionPromptUI.Instance != null)
         {
-            interactionPrompt.text = "Release E to drop";
-            interactionPrompt.gameObject.SetActive(true);
-        }
-        else if (nearbyBox != null)
-        {
-            interactionPrompt.text = "Hold E to push/pull";
-            interactionPrompt.gameObject.SetActive(true);
-        }
-        else
-        {
-            interactionPrompt.gameObject.SetActive(false);
+            if (currentBox != null)
+            {
+                InteractionPromptUI.Instance.ShowPrompt("Press E to Release");
+            }
+            else if (lookingAtBox != null)
+            {
+                InteractionPromptUI.Instance.ShowPrompt("Press E to Push");
+            }
         }
     }
 
