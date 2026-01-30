@@ -3,7 +3,7 @@ using UnityEngine;
 public class ToggleTimeScript : MonoBehaviour
 {
     public Texture futureTexture,pastTexture;
-    private bool timeToggle=false;
+    private bool timeToggle = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -20,13 +20,6 @@ public class ToggleTimeScript : MonoBehaviour
         timeToggle = value;
         Debug.Log(gameObject.name + " has been called with global toggle.");
         Renderer rend = GetComponent<Renderer>();
-        if (value)
-        {
-            rend.material.color = Color.red;
-        }
-        else
-        {
-            rend.material.color = Color.white;
-        }
+        rend.material.color = value?Color.red:Color.white;
     }
 }
