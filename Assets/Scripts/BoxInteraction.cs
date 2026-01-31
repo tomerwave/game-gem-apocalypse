@@ -22,6 +22,8 @@ public class BoxInteraction : MonoBehaviour
     private InteractableBox lookingAtBox;
     private float originalWalkSpeed;
     private float originalSprintSpeed;
+    private float timeCooldown=0.5f;
+    private float timeLatest=0;
 
     void Start()
     {
@@ -84,17 +86,23 @@ public class BoxInteraction : MonoBehaviour
     void HandleInteraction()
     {
         // Toggle interaction on E press (not hold)
-        if (input.interact)
+        if (input.interact && Time.time >= timeLatest+timeCooldown)
         {
+            
             if (currentBox == null && lookingAtBox != null)
             {
                 // Start pushing
+                timeLatest = Time.time;
+
                 StartHolding(lookingAtBox);
+                input.hold = true;
             }
             else if (currentBox != null)
             {
+                timeLatest = Time.time;
                 // Stop pushing
                 StopHolding();
+                input.hold = false;
             }
         }
 
@@ -104,8 +112,8 @@ public class BoxInteraction : MonoBehaviour
             // Check if still looking at the box
             if (!IsLookingAtCurrentBox())
             {
-                Debug.Log("[BoxInteraction] No longer looking at box, dropping.");
                 StopHolding();
+                input.hold = false;
                 return;
             }
 
@@ -117,12 +125,10 @@ public class BoxInteraction : MonoBehaviour
 
             float distance = Vector3.Distance(transform.position, currentBox.transform.position);
 
-            Debug.Log($"[BoxInteraction] Distance: {distance:F2} | MaxDist: {currentBox.maxDistance} | Speed: {currentSpeed:F2} | Sprinting: {isSprinting}");
-
             if (distance > currentBox.maxDistance)
             {
-                Debug.LogWarning($"[BoxInteraction] MAX DISTANCE EXCEEDED! Dropping box. Distance: {distance:F2}");
                 StopHolding();
+                input.hold = false;
             }
         }
     }

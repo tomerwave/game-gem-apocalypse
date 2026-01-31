@@ -87,5 +87,9 @@ public class AnimatorController : MonoBehaviour
             calledOnce = true;
             StartCoroutine(FadeInOut(true));
         }
+        if(input.interact && input.hold)
+            anim.SetBool("Interact",input.interact);
+        else if(!input.hold)
+            anim.SetBool("Interact",input.interact);
     }
 }
