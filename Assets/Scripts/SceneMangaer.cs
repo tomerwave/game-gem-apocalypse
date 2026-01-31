@@ -22,10 +22,19 @@ public class SceneMangaer : MonoBehaviour
 
     public void RetryButton()
     {
+        
         SceneManager.LoadScene(managerIndex);
     }
     public void ExitGame()
     {
         Application.Quit();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            RetryButton();
+        }
     }
 }
