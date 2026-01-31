@@ -63,16 +63,26 @@ public class SwitchScript : MonoBehaviour
         if (canInteract && interactPressed && Time.time>lastInteractTime+interactCooldown)
         {
             lastInteractTime = Time.time;
+            string action = switchValue ? "Turn Off" : "Turn On";
 
+            if(gameObject.tag == "Key")
+            {
+                action = "Take";
+            }
             if (InteractionPromptUI.Instance != null)
             {
-                string action = switchValue ? "Turn Off" : "Turn On";
                 InteractionPromptUI.Instance.ShowPrompt($"Press E to {action}");
             }
 
             switchValue = !switchValue;
             interacteWith?.GetComponent<SwitchInteractive>()?.DoStuff(switchValue);
-            GetComponent<Renderer>().material.color = switchValue ? Color.green : Color.blue;
+            if(gameObject.tag == "Key")
+            {
+                Destroy(gameObject);
+            }
+            else{
+                GetComponent<Renderer>().material.color = switchValue ? Color.green : Color.blue;
+            }
         }
     }
 
