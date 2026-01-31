@@ -12,6 +12,9 @@ public class SwitchScript : MonoBehaviour
 
     private Camera playerCamera;
     private bool canInteract;
+    private float interactCooldown = 1.6f;
+    private float lastInteractTime = 0f;
+
 
     void Start()
     {
@@ -57,8 +60,10 @@ public class SwitchScript : MonoBehaviour
         }
         
 
-        if (canInteract && interactPressed)
+        if (canInteract && interactPressed && Time.time>lastInteractTime+interactCooldown)
         {
+            lastInteractTime = Time.time;
+
             if (InteractionPromptUI.Instance != null)
             {
                 string action = switchValue ? "Turn Off" : "Turn On";

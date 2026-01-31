@@ -12,7 +12,6 @@ public class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, I
     {
         handle = transform.GetChild(0).gameObject.GetComponent<RectTransform>();
         lookInput = transform.gameObject.name.Contains("Look");
-
     }
 
     public void OnPointerDown(PointerEventData eventData)
