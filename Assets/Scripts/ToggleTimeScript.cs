@@ -3,12 +3,19 @@ using UnityEngine;
 public class ToggleTimeScript : MonoBehaviour
 {
     public Texture futureTexture,pastTexture;
+    public GameObject linkedGameObject;
     private bool timeToggle = false;
     
 
     public void OnGlobalToggleChanged(bool value)
     {
-        Debug.Log(gameObject.tag);
+        if(linkedGameObject!=null){
+            linkedGameObject.transform.position = transform.position;
+            linkedGameObject.SetActive(true);
+            this.gameObject.SetActive(false);
+            return;
+        }
+
         switch (gameObject.tag)
         {
             case "Wall":
