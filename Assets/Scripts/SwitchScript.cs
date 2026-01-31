@@ -4,7 +4,7 @@ using EasyPeasyFirstPersonController;
 public class SwitchScript : MonoBehaviour
 {
     public bool switchValue;
-    public GameObject[] interacteWith;
+    public GameObject interacteWith;
     public float interactionRange = 2f;
 
     private Transform player;
@@ -71,8 +71,7 @@ public class SwitchScript : MonoBehaviour
             }
 
             switchValue = !switchValue;
-            foreach (GameObject item in interacteWith)
-                item?.GetComponent<SwitchInteractive>()?.DoStuff(switchValue);
+            interacteWith?.GetComponent<SwitchInteractive>()?.DoStuff(switchValue);
             GetComponent<Renderer>().material.color = switchValue ? Color.green : Color.blue;
         }
     }
