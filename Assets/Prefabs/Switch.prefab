@@ -128,6 +128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ToggleTimeScript
   futureTexture: {fileID: 0}
   pastTexture: {fileID: 0}
+  linkedGameObject: {fileID: 0}
 --- !u!114 &2726999666716617330
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,5 +142,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   switchValue: 0
-  interacteWith: []
-  interactionRange: 2
+  interacteWith: {fileID: 0}
+  interactionRange: 3

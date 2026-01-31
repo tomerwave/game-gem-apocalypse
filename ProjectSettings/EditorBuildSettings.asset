@@ -5,12 +5,27 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
-    path: Assets/testingGround.unity
-    guid: e3395d13898d55a4dbe7a9db8d1b1cae
+    path: Assets/MainMenu.unity
+    guid: 3fc9e6454f02d8d4ba051f8659ed3621
+  - enabled: 1
+    path: Assets/Scenes/Level1GreyBox.unity
+    guid: edc25794596fb12429407cef4234b9af
+  - enabled: 1
+    path: Assets/Scenes/Level2GreyBox.unity
+    guid: b1eac92fd29cf274da6d9f14fac5d264
+  - enabled: 1
+    path: Assets/Scenes/Level3GreyBox.unity
+    guid: 08a40f36d1d4e4846b79d32e2f9e23b1
+  - enabled: 1
+    path: Assets/Scenes/Level4GreyBox.unity
+    guid: 99a21f0b39d838649a85f9fa5a2df088
+  - enabled: 1
+    path: Assets/Scenes/Level5GreyBox.unity
+    guid: 7e9c8823fcb0df74abf4173fead4e1c5
+  - enabled: 1
+    path: Assets/Scenes/Level6.unity
+    guid: a9ec56b3149841744b4fdc969e2e5e3a
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
