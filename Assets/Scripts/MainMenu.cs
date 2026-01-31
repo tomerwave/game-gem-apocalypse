@@ -18,6 +18,7 @@ public class MainMenu : MonoBehaviour
         }
 
         instance = this;
+        mute=false;
         DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
@@ -47,7 +48,7 @@ public class MainMenu : MonoBehaviour
     public void MutePressed()
     {
         mute = !mute;
-        VolumeSlider.GetComponent<Slider>().interactable = mute;
+        VolumeSlider.GetComponent<Slider>().interactable = !mute;
     }
     public void ExitPressed()
     {
